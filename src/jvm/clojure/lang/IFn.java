@@ -13,6 +13,10 @@
 package clojure.lang;
 
 import java.util.concurrent.Callable;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * <p><code>IFn</code> provides complete access to invoking
@@ -20,7 +24,13 @@ import java.util.concurrent.Callable;
  * You can also access any other library written in Clojure, after adding
  * either its source or compiled form to the classpath.</p>
  */
-public interface IFn extends Callable, Runnable{
+public interface IFn extends Callable,
+                             Runnable,
+                             Consumer,
+                             Function,
+                             Predicate,
+                             Supplier
+{
 
 public Object invoke() ;
 
@@ -91,6 +101,14 @@ public Object invoke(Object arg1, Object arg2, Object arg3, Object arg4, Object 
                      Object arg15, Object arg16, Object arg17, Object arg18, Object arg19, Object arg20,
                      Object... args)
 		;
+
+/* Support for java.util.function */
+
+default public Object apply(Object arg1){ return invoke(arg1); }
+default public void accept(Object arg1){ invoke(arg1); }
+default public Object get(){ return invoke(); }
+default public boolean test(Object arg1){ return (boolean) invoke(arg1); }
+
 
 public Object applyTo(ISeq arglist) ;
 
